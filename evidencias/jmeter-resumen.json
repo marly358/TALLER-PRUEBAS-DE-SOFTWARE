@@ -1,0 +1,15 @@
+{
+  "label": "Consultar asientos",
+  "samples": 18512,
+  "failures": 0,
+  "errorPercent": 0,
+  "throughputPerSecond": 419.8874977318091,
+  "averageMs": 1.3666270527225584,
+  "p95Ms": 2,
+  "maxMs": 107,
+  "maxThreads": 500,
+  "durationSeconds": 44.088,
+  "startUTC": "2026-10-21T01:39:08.706Z",
+  "scope": "Mock local: lectura de asientos con JWT compartido, sin banco real.",
+  "passed": true
+}

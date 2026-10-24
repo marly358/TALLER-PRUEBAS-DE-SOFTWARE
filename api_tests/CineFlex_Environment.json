@@ -1,0 +1,36 @@
+{
+  "name": "CineFlex local",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:3000",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "email",
+      "value": "demo@cineflex.test",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "password",
+      "value": "CineFlex123!",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "seat",
+      "value": "",
+      "enabled": true,
+      "type": "default"
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}

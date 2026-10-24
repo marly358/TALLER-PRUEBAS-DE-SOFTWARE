@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CineFlex · Tu próxima historia</title>
+  <link rel="stylesheet" href="styles.css"><script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="#login" aria-label="CineFlex inicio">CINE<span>FLEX</span><small>LA EXPERIENCIA EMPIEZA AQUÍ</small></a>
+    <div class="header-actions"><span class="mock-badge">LABORATORIO QA</span><button id="logout" class="outline" hidden>Cerrar sesión</button></div></header>
+  <main>
+    <section id="login-view" class="login-layout">
+      <div class="intro"><p class="eyebrow">MÁS QUE UNA ENTRADA</p><h1>Hay historias<br>que merecen<br><em>una gran pantalla.</em></h1><p>Tu película, tu asiento, tu momento.<br>Reserva tu próxima experiencia en CineFlex.</p><div class="film-art" aria-hidden="true"><span>CF / 01</span><b>EL SIGUIENTE<br>VIAJE ES TUYO.</b><small>LUZ · CÁMARA · EMOCIÓN</small></div></div>
+      <div class="panel login-panel"><p class="eyebrow">BIENVENIDO A CINEFLEX</p><h2>Que empiece la función</h2><p class="muted">Ingresa para descubrir la cartelera y reservar.</p>
+        <form id="login-form"><label for="email">Correo electrónico</label><input id="email" type="email" autocomplete="username" maxlength="254" placeholder="tu@correo.com" required>
+          <label for="password">Contraseña</label><input id="password" type="password" autocomplete="current-password" maxlength="128" placeholder="Tu contraseña" required>
+          <button id="login-button" type="submit">Entrar a la cartelera <span aria-hidden="true">→</span></button></form>
+        <p id="login-error" role="alert" class="error"></p><aside class="demo-note"><strong>Explora el entorno de prueba</strong><br>demo@cineflex.test<br>CineFlex123!<p>Todos los pagos son simulados.</p></aside>
+      </div>
+    </section>
+    <section id="cartelera-view" hidden><div class="section-head"><div><p class="eyebrow">ELIGE TU PRÓXIMA HISTORIA</p><h1 id="cartelera-title">Cartelera</h1><p class="muted">Tres historias. Una gran experiencia.</p></div><label class="filter" for="genre">Género<select id="genre"><option value="">Todos los géneros</option><option value="Ciencia ficción">Ciencia ficción</option><option value="Suspenso">Suspenso</option><option value="Comedia">Comedia</option></select></label></div><div id="movies" class="movie-grid"></div><p id="catalog-error" class="error" role="alert"></p></section>
+    <section id="reserva-view" hidden><button id="back-cartelera" class="text-button">← Volver a cartelera</button><div class="section-head"><div><p class="eyebrow">TU LUGAR EN LA HISTORIA</p><h1 id="movie-title"></h1><p id="movie-details" class="muted"></p></div><span class="step-label">01 ASIENTO / 02 PAGO</span></div>
+      <div class="booking-layout"><div class="panel auditorium"><h2>Elige tu asiento</h2><div class="screen">PANTALLA</div><div id="seats" class="seats" aria-label="Asientos disponibles"></div><div class="legend"><span>○ Disponible</span><span>● Seleccionado</span><span>▧ Ocupado</span></div></div>
+      <div class="panel"><p class="eyebrow">RESUMEN DE TU RESERVA</p><h2>Una entrada, mil emociones</h2><div class="summary-row"><span>Asiento</span><strong id="selected-seat">Sin seleccionar</strong></div><div class="summary-row"><span>Total</span><strong id="total"></strong></div>
+        <form id="payment-form"><label for="card-number">Tarjeta de prueba</label><input id="card-number" inputmode="numeric" pattern="[0-9]{16}" maxlength="16" required placeholder="16 dígitos"><p class="muted small">Aprobada: 4111111111111111<br>Rechazada: 4000000000000002</p><button id="pay-button" type="submit" disabled>Confirmar y pagar →</button></form><p id="payment-error" class="error" role="alert"></p><p class="small muted">Simulación académica. No ingreses datos bancarios reales.</p>
+      </div></div>
+    </section>
+    <section id="ticket-view" class="ticket-wrap" hidden><div class="panel ticket"><p class="eyebrow">¡NOS VEMOS EN EL CINE!</p><h1 id="ticket-title">Ticket virtual</h1><p>Tu reserva ha sido confirmada.</p><hr><h2 id="ticket-movie"></h2><div class="summary-row"><span>Asiento</span><strong id="ticket-seat"></strong></div><div class="summary-row"><span>Total pagado</span><strong id="ticket-total"></strong></div><div class="ticket-code" id="ticket-id"></div><p class="small muted">Entrada de demostración · pago simulado</p><button id="new-booking">Volver a cartelera</button></div></section>
+  </main>
+  <footer><span>CINEFLEX © 2026</span><span>Proyecto académico · Calidad en cada escena</span></footer>
+</body>
+</html>

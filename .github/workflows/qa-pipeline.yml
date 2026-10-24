@@ -1,0 +1,74 @@
+name: CineFlex QA
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  api:
+    name: API y regresión
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: Postman con Newman y servidor aislado
+        run: npm run test:api
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: newman-results
+          path: artifacts/
+  ui:
+    name: Selenium POM
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: 20 casos en Chrome headless
+        run: npm run test:ui
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: selenium-results
+          path: artifacts/
+  docker:
+    name: Docker Compose
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validar configuración de contenedores
+        run: docker compose config --quiet
+      - name: Construir e iniciar CineFlex
+        run: docker compose up --build -d --wait
+      - name: Ejecutar todas las suites dentro de Docker
+        run: docker compose run --build --rm qa
+      - name: Copiar informes de los volúmenes
+        if: always()
+        run: |
+          docker compose create qa
+          docker compose cp qa:/app/artifacts/. ./artifacts
+          docker compose cp qa:/app/performance/results/. ./performance/results
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: docker-results
+          path: |
+            artifacts/
+            performance/results/
+      - name: Mostrar logs y detener contenedores
+        if: always()
+        run: |
+          docker compose logs --no-color app
+          docker compose down

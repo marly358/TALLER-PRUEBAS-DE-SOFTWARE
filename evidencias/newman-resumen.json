@@ -1,0 +1,220 @@
+{
+  "suite": "Postman / Newman",
+  "dateLocal": "2026-10-20 America/Bogota",
+  "requests": {
+    "total": 9,
+    "pending": 0,
+    "failed": 0
+  },
+  "assertions": {
+    "total": 35,
+    "pending": 0,
+    "failed": 0
+  },
+  "failures": [],
+  "executions": [
+    {
+      "name": "01 Login: capturar JWT",
+      "status": 200,
+      "responseTimeMs": 86,
+      "assertions": [
+        {
+          "name": "HTTP 200",
+          "passed": true
+        },
+        {
+          "name": "Respuesta JSON",
+          "passed": true
+        },
+        {
+          "name": "JWT con tres segmentos",
+          "passed": true
+        },
+        {
+          "name": "Usuario esperado",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "02 Cartelera autenticada y SLA",
+      "status": 200,
+      "responseTimeMs": 5,
+      "assertions": [
+        {
+          "name": "HTTP 200",
+          "passed": true
+        },
+        {
+          "name": "JSON válido",
+          "passed": true
+        },
+        {
+          "name": "SLA menor a 300 ms",
+          "passed": true
+        },
+        {
+          "name": "Tres películas",
+          "passed": true
+        },
+        {
+          "name": "Contrato de película",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "03 Asientos disponibles",
+      "status": 200,
+      "responseTimeMs": 3,
+      "assertions": [
+        {
+          "name": "HTTP 200",
+          "passed": true
+        },
+        {
+          "name": "JSON válido",
+          "passed": true
+        },
+        {
+          "name": "24 asientos",
+          "passed": true
+        },
+        {
+          "name": "Hay asiento disponible",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "04 Reserva negativa: tarjeta falsa",
+      "status": 400,
+      "responseTimeMs": 4,
+      "assertions": [
+        {
+          "name": "Tarjeta falsa rechazada",
+          "passed": true
+        },
+        {
+          "name": "JSON válido",
+          "passed": true
+        },
+        {
+          "name": "Código de negocio",
+          "passed": true
+        },
+        {
+          "name": "Mensaje exacto",
+          "passed": true
+        },
+        {
+          "name": "Sin ticket",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "05 Fallo de pago libera asiento",
+      "status": 200,
+      "responseTimeMs": 3,
+      "assertions": [
+        {
+          "name": "HTTP 200",
+          "passed": true
+        },
+        {
+          "name": "JSON válido",
+          "passed": true
+        },
+        {
+          "name": "Asiento sigue libre",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "06 Compra aprobada",
+      "status": 201,
+      "responseTimeMs": 3,
+      "assertions": [
+        {
+          "name": "HTTP 201",
+          "passed": true
+        },
+        {
+          "name": "JSON válido",
+          "passed": true
+        },
+        {
+          "name": "Ticket emitido",
+          "passed": true
+        },
+        {
+          "name": "Asiento correcto",
+          "passed": true
+        },
+        {
+          "name": "Precio calculado por servidor",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "07 Duplicar asiento se rechaza",
+      "status": 409,
+      "responseTimeMs": 2,
+      "assertions": [
+        {
+          "name": "HTTP 409",
+          "passed": true
+        },
+        {
+          "name": "Código de conflicto",
+          "passed": true
+        },
+        {
+          "name": "Sin segundo ticket",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "08 Logout revoca JWT",
+      "status": 200,
+      "responseTimeMs": 2,
+      "assertions": [
+        {
+          "name": "HTTP 200",
+          "passed": true
+        },
+        {
+          "name": "JSON válido",
+          "passed": true
+        },
+        {
+          "name": "Sesión cerrada",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "09 JWT revocado no permite acceso",
+      "status": 401,
+      "responseTimeMs": 2,
+      "assertions": [
+        {
+          "name": "HTTP 401",
+          "passed": true
+        },
+        {
+          "name": "Código de seguridad",
+          "passed": true
+        },
+        {
+          "name": "No expone películas",
+          "passed": true
+        }
+      ]
+    }
+  ]
+}

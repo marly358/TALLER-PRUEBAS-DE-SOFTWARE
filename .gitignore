@@ -1,0 +1,10 @@
+node_modules/
+.env
+.env.*
+!.env.example
+backend/data/
+artifacts/
+performance/results/
+*.log
+__pycache__/
+.tools/

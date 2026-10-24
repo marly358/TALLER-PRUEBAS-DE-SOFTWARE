@@ -1,0 +1,309 @@
+{
+  "info": {
+    "name": "CineFlex · API QA",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Ejecutar en orden. Cada solicitud incluye al menos 3 aserciones. Solo usar con el mock CineFlex."
+  },
+  "item": [
+    {
+      "name": "01 Login: capturar JWT",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\": \"{{email}}\", \"password\": \"{{password}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.environment.unset('token');",
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+              "const payload = pm.response.json();",
+              "pm.test('JWT con tres segmentos', () => pm.expect(payload.token).to.match(/^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$/));",
+              "pm.test('Usuario esperado', () => pm.expect(payload.user.email).to.eql(pm.environment.get('email')));",
+              "if (pm.response.code === 200 && payload.token) pm.environment.set('token', payload.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Cartelera autenticada y SLA",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/movies"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON válido', () => pm.response.to.be.json);",
+              "pm.test('SLA menor a 300 ms', () => pm.expect(pm.response.responseTime).to.be.below(300));",
+              "const payload = pm.response.json();",
+              "pm.test('Tres películas', () => pm.expect(payload.movies).to.have.lengthOf(3));",
+              "pm.test('Contrato de película', () => payload.movies.forEach(movie => { pm.expect(movie).to.have.all.keys('id','title','genre','duration','price'); pm.expect(movie.price).to.be.above(0); }));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Asientos disponibles",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/movies/1/seats"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON válido', () => pm.response.to.be.json);",
+              "const payload = pm.response.json();",
+              "pm.test('24 asientos', () => pm.expect(payload.seats).to.have.lengthOf(24));",
+              "const free = payload.seats.find(seat => seat.available);",
+              "pm.test('Hay asiento disponible', () => pm.expect(free).to.be.an('object'));",
+              "if (free) pm.environment.set('seat', free.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 Reserva negativa: tarjeta falsa",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/reservations",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"movieId\": 1, \"seat\": \"{{seat}}\", \"cardNumber\": \"1234567890123456\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Tarjeta falsa rechazada', () => pm.expect(pm.response.code).to.be.oneOf([400,402]));",
+              "pm.test('JSON válido', () => pm.response.to.be.json);",
+              "const payload = pm.response.json();",
+              "pm.test('Código de negocio', () => pm.expect(payload.code).to.eql('INVALID_CARD'));",
+              "pm.test('Mensaje exacto', () => pm.expect(payload.message).to.eql('Tarjeta de prueba no válida.'));",
+              "pm.test('Sin ticket', () => pm.expect(payload).not.to.have.property('ticket'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Fallo de pago libera asiento",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/movies/1/seats"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON válido', () => pm.response.to.be.json);",
+              "pm.test('Asiento sigue libre', () => pm.expect(pm.response.json().seats.find(s => s.id === pm.environment.get('seat')).available).to.eql(true));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 Compra aprobada",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/reservations",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"movieId\": 1, \"seat\": \"{{seat}}\", \"cardNumber\": \"4111111111111111\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+              "pm.test('JSON válido', () => pm.response.to.be.json);",
+              "const ticket = pm.response.json().ticket;",
+              "pm.test('Ticket emitido', () => pm.expect(ticket.id).to.match(/^CF-/));",
+              "pm.test('Asiento correcto', () => pm.expect(ticket.seat).to.eql(pm.environment.get('seat')));",
+              "pm.test('Precio calculado por servidor', () => pm.expect(ticket.total).to.eql(18000));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 Duplicar asiento se rechaza",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/reservations",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"movieId\": 1, \"seat\": \"{{seat}}\", \"cardNumber\": \"4111111111111111\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 409', () => pm.response.to.have.status(409));",
+              "pm.test('Código de conflicto', () => pm.expect(pm.response.json().code).to.eql('SEAT_TAKEN'));",
+              "pm.test('Sin segundo ticket', () => pm.expect(pm.response.json()).not.to.have.property('ticket'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 Logout revoca JWT",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/logout"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON válido', () => pm.response.to.be.json);",
+              "pm.test('Sesión cerrada', () => pm.expect(pm.response.json().message).to.eql('Sesión cerrada.'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 JWT revocado no permite acceso",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/movies"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401', () => pm.response.to.have.status(401));",
+              "pm.test('Código de seguridad', () => pm.expect(pm.response.json().code).to.eql('UNAUTHORIZED'));",
+              "pm.test('No expone películas', () => pm.expect(pm.response.json()).not.to.have.property('movies'));",
+              "pm.environment.unset('token');"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

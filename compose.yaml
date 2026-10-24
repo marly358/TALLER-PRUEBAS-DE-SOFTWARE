@@ -1,0 +1,29 @@
+name: qa-cineflex
+
+services:
+  app:
+    build:
+      context: .
+      target: runtime
+    ports:
+      - "127.0.0.1:${CINEFLEX_PORT:-3000}:3000"
+    volumes:
+      - cineflex-data:/app/backend/data
+    init: true
+    restart: unless-stopped
+
+  qa:
+    profiles: [test]
+    build:
+      context: .
+      target: qa
+    volumes:
+      - qa-artifacts:/app/artifacts
+      - qa-performance:/app/performance/results
+    shm_size: 512mb
+    init: true
+
+volumes:
+  cineflex-data:
+  qa-artifacts:
+  qa-performance:

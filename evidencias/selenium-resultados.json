@@ -1,0 +1,102 @@
+[
+  {
+    "name": "UI-01 Login visible al abrir",
+    "passed": true,
+    "ms": 191
+  },
+  {
+    "name": "UI-02 Credenciales incorrectas",
+    "passed": true,
+    "ms": 537
+  },
+  {
+    "name": "UI-03 Bloqueo tras tres errores y rechazo de clave correcta",
+    "passed": true,
+    "ms": 1421
+  },
+  {
+    "name": "UI-04 Login exitoso y título Cartelera",
+    "passed": true,
+    "ms": 400
+  },
+  {
+    "name": "UI-05 Cartelera contiene tres películas",
+    "passed": true,
+    "ms": 403
+  },
+  {
+    "name": "UI-06 Filtro por género",
+    "passed": true,
+    "ms": 476
+  },
+  {
+    "name": "UI-07 Restaurar todos los géneros",
+    "passed": true,
+    "ms": 455
+  },
+  {
+    "name": "UI-08 Seleccionar película correcta",
+    "passed": true,
+    "ms": 471
+  },
+  {
+    "name": "UI-09 Mapa de 24 asientos",
+    "passed": true,
+    "ms": 457
+  },
+  {
+    "name": "UI-10 Asiento ocupado no seleccionable",
+    "passed": true,
+    "ms": 471
+  },
+  {
+    "name": "UI-11 Pago deshabilitado sin asiento",
+    "passed": true,
+    "ms": 436
+  },
+  {
+    "name": "UI-12 Seleccionar un asiento libre",
+    "passed": true,
+    "ms": 518
+  },
+  {
+    "name": "UI-13 Cambiar asiento conserva una sola selección",
+    "passed": true,
+    "ms": 547
+  },
+  {
+    "name": "UI-14 Tarjeta falsa devuelve mensaje correcto",
+    "passed": true,
+    "ms": 544
+  },
+  {
+    "name": "UI-15 Rechazo bancario no ocupa asiento",
+    "passed": true,
+    "ms": 1124
+  },
+  {
+    "name": "UI-16 Compra completa y ticket virtual",
+    "passed": true,
+    "ms": 921
+  },
+  {
+    "name": "UI-17 Regresar de reserva a cartelera",
+    "passed": true,
+    "ms": 506
+  },
+  {
+    "name": "UI-18 Cerrar sesión y botón Atrás",
+    "passed": true,
+    "ms": 583
+  },
+  {
+    "name": "UI-19 URL protegida sin sesión",
+    "passed": true,
+    "ms": 95
+  },
+  {
+    "name": "UI-20 Recarga conserva sesión válida",
+    "passed": true,
+    "ms": 425
+  }
+]

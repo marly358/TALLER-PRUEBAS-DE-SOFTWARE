@@ -1,0 +1,14 @@
+.git
+**/node_modules
+**/.env
+**/.env.*
+!**/.env.example
+backend/data
+artifacts
+performance/results
+.tools
+**/__pycache__
+**/*.log
+evidencias
+*.pdf
+README.md
